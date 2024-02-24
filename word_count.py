@@ -125,7 +125,6 @@ def create_marker(output_directory):
         file.write("")
 
 
-
 #
 # Escriba la función job, la cual orquesta las funciones anteriores.
 #
