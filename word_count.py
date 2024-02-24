@@ -65,8 +65,6 @@ def shuffle_and_sort(sequence):
     sorted_sequence = sorted(sequence, key = lambda x: x[0])
     return sorted_sequence
 
-
-
 #
 # Escriba la función reducer, la cual recibe el resultado de shuffle_and_sort y
 # reduce los valores asociados a cada clave sumandolos. Como resultado, por
