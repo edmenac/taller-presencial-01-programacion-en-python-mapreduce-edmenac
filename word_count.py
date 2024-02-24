@@ -15,6 +15,7 @@
 #
 import glob
 import fileinput
+import os
 
 def load_input(input_directory):
 
@@ -24,9 +25,6 @@ def load_input(input_directory):
         for line in f:
             sequence.append((fileinput.filename(), line))
     return sequence
-
-# print(filenames[2])
-# print(filenames)
 
 #
 # Escriba una función llamada maper que recibe una lista de tuplas de la
@@ -45,12 +43,11 @@ def mapper(sequence):
     for _, text in sequence:
         words = text.split()
         for word in words:
+            word = word.replace(",", "")
+            word = word.replace(".", "")
+            word = word.lower()
             new_sequence.append((word,1))
     return new_sequence
-
-# sequence = load_input("input")
-# sequence = mapper(sequence)
-# print(sequence)
 
 
 #
@@ -68,10 +65,6 @@ def shuffle_and_sort(sequence):
     sorted_sequence = sorted(sequence, key = lambda x: x[0])
     return sorted_sequence
 
-# sequence = load_input("input")
-# sequence = mapper(sequence)
-# sequence = sorted(sequence)
-# print(sequence)
 
 
 #
@@ -99,8 +92,13 @@ def reducer(sequence):
 # Escriba la función create_ouptput_directory que recibe un nombre de directorio
 # y lo crea. Si el directorio existe, la función falla.
 #
-def create_ouptput_directory(output_directory):
-    pass
+def create_output_directory(output_directory):
+    if os.path.exists(output_directory):
+        raise FileExistsError(f"La carpeta '{output_directory}' ya existe.")
+    else:
+        os.makedirs(output_directory)
+        print(f"La carpeta '{output_directory}' ha sido creada exitosamente.")
+
 
 
 #
@@ -112,7 +110,10 @@ def create_ouptput_directory(output_directory):
 # separados por un tabulador.
 #
 def save_output(output_directory, sequence):
-    pass
+    with open(output_directory + "/part-00000", "w") as file:
+        for key, value in sequence:
+            file.write(f"{key}\t{value}\n")
+
 
 
 #
@@ -120,18 +121,26 @@ def save_output(output_directory, sequence):
 # entregado como parámetro.
 #
 def create_marker(output_directory):
-    pass
+    with open(output_directory + "/SUCESS", "w") as file:
+        file.write("")
+
 
 
 #
 # Escriba la función job, la cual orquesta las funciones anteriores.
 #
 def job(input_directory, output_directory):
-    pass
+    sequence = load_input(input_directory)
+    sequence = mapper(sequence)
+    sequence = sorted(sequence)
+    sequence = reducer(sequence)
+    create_output_directory(output_directory)
+    save_output(output_directory, sequence)
+    create_marker(output_directory)
 
 
-# if __name__ == "__main__":
-#     job(
-#         "input",
-#         "output",
-#     )
+if __name__ == "__main__":
+    job(
+        "input",
+        "output",
+    )
